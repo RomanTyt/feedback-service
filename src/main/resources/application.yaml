@@ -19,8 +19,7 @@ spring:
     console:
       enabled: true
       path: /h2
-
-
-
-
-
+logging:
+  level:
+    org.springframework.orm.jpa: DEBUG
+    org.springframework.transaction: DEBUG

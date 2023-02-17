@@ -6,7 +6,7 @@ databaseChangeLog:
   - include:
       file: db/changelog/changeset/create-feedback-table.sql
   - include:
-      file: db/changelog/changeset/create-response-organization-table.sql
+      file: db/changelog/changeset/create-organization-reply-table.sql
   - include:
       file: db/changelog/changeset/create-comment-to-feedback-table.sql
 

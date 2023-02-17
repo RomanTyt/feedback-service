@@ -1,17 +1,17 @@
 package com.tyutyakov.feedbackservice.controller;
 
-import com.tyutyakov.feedbackservice.model.dto.FeedbackRateDTO;
-import com.tyutyakov.feedbackservice.model.entity.CommentToFeedback;
-import com.tyutyakov.feedbackservice.model.entity.Feedback;
-import com.tyutyakov.feedbackservice.model.entity.ResponseOrganization;
+import com.tyutyakov.feedbackservice.model.dto.*;
 import com.tyutyakov.feedbackservice.service.FeedbackService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping(value = "api/v1/feedback", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "api/v1/feedbacks", produces = MediaType.APPLICATION_JSON_VALUE)
 @Tag(name = "Отзывы")
 public class FeedbackController {
     private final FeedbackService feedbackService;
@@ -20,45 +20,65 @@ public class FeedbackController {
         this.feedbackService = feedbackService;
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{feedbackId}")
     @Operation(summary = "Найти отзыв по id")
-    public Feedback findFeedbackById(@PathVariable String id){
-        return feedbackService.findFeedbackById(id);
+    public FeedbackGetDTO findFeedbackById(@PathVariable String feedbackId){
+        return feedbackService.findFeedbackById(feedbackId);
     }
 
     @PostMapping
     @Operation(summary = "Создать новый отзыв")
-    public String createNewFeedback(@RequestBody Feedback feedback) {
-        return feedbackService.createNewFeedback(feedback);
+    @ResponseStatus(HttpStatus.CREATED)
+    public String createNewFeedback(@RequestBody FeedbackCreateDTO feedbackCreateDTO) {
+        return feedbackService.createNewFeedback(feedbackCreateDTO);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/{feedbackId}")
     @Operation(summary = "Редактировать отзыв")
-    public String editFeedback(@PathVariable String id, @RequestBody Feedback updatedFeedback){
-        return feedbackService.editFeedback(id, updatedFeedback);
+    public FeedbackGetDTO editFeedback(@PathVariable String feedbackId, @RequestBody FeedbackUpdateDTO feedbackUpdateDTO){
+        return feedbackService.editFeedback(feedbackId, feedbackUpdateDTO);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{feedbackId}")
     @Operation(summary = "Удалить отзыв")
-    public String deleteFeedbackById(@PathVariable String id){
-        return feedbackService.deleteFeedbackById(id);
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteFeedbackById(@PathVariable String feedbackId){
+        feedbackService.deleteFeedbackById(feedbackId);
     }
 
-    @PostMapping("/CommentToFeedback/{id}")
+    @PostMapping("/{feedbackId}/CommentToFeedback")
     @Operation(summary = "Добавить комментарий к отзыву от другого пользователя")
-    public String addCommentToFeedback(@PathVariable String id, @RequestBody CommentToFeedback commentToFeedback){
-        return feedbackService.addCommentToFeedback(id, commentToFeedback);
+    @ResponseStatus(HttpStatus.CREATED)
+    public String addCommentToFeedback(@PathVariable String feedbackId, @RequestBody CommentToFeedbackCreateDTO commentToFeedbackCreateDTO){
+        return feedbackService.addCommentToFeedback(feedbackId, commentToFeedbackCreateDTO);
     }
 
-    @PutMapping("/RateFeedback/{id}")
+    @GetMapping("/{feedbackId}/CommentToFeedback")
+    @Operation(summary = "Получить все комментарии к отзыву")
+    public List<CommentToFeedbackGetDTO> getAllCommentToFeedback(@PathVariable String feedbackId){
+        return feedbackService.getAllCommentToFeedback(feedbackId);
+    }
+
+    @PutMapping("/{feedbackId}/RateFeedback")
     @Operation(summary = "Оценить отзыв(лайк/дизлайк)")
-    public String rateFeedback(@PathVariable String id, @RequestBody FeedbackRateDTO feedbackRateDTO){
-        return feedbackService.rateFeedback(id, feedbackRateDTO);
+    public String rateFeedback(@PathVariable String feedbackId, @RequestBody FeedbackRateDTO feedbackRateDTO){
+        return feedbackService.rateFeedback(feedbackId, feedbackRateDTO);
     }
 
-    @PostMapping("/ResponseOrganization")
+    @PostMapping("/{feedbackId}/OrganizationReply")
     @Operation(summary = "Добавить ответ на отзыв от организации")
-    public String addResponseOrganization(@RequestBody ResponseOrganization responseOrganization){
-        return feedbackService.addResponseOrganization(responseOrganization);
+    @ResponseStatus(HttpStatus.CREATED)
+    public String addOrganizationReply(@PathVariable String feedbackId, @RequestBody OrganizationReplyCreateDTO organizationReplyCreateDTO) {
+        try {
+            return feedbackService.addOrganizationReply(feedbackId, organizationReplyCreateDTO);
+        } catch (Exception exception) {
+            return "Ответ на этот отзыв уже есть в БД.";
+        }
+    }
+
+    @GetMapping("/{feedbackId}/OrganizationReply")
+    @Operation(summary = "Получить ответ на отзыв от организации")
+    public OrganizationReplyGetDTO getOrganizationReply(@PathVariable String feedbackId){
+        return feedbackService.getOrganizationReply(feedbackId);
     }
 }
