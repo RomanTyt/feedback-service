@@ -1,0 +1,12 @@
+databaseChangeLog:
+  #Схема
+  - include:
+      file: db/changelog/schema/create-schema-feedback.sql
+  #Таблицы
+  - include:
+      file: db/changelog/changeset/create-feedback-table.sql
+  - include:
+      file: db/changelog/changeset/create-organization-reply-table.sql
+  - include:
+      file: db/changelog/changeset/create-comment-to-feedback-table.sql
+
