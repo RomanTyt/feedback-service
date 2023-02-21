@@ -13,6 +13,4 @@ public interface OrganizationReplyMapper {
     OrganizationReplyCreateDTO organizationReplyMapToDTO(OrganizationReply organizationReply);
 
     OrganizationReplyGetDTO organizationReplyMapToGetDTO(OrganizationReply organizationReply);
-
-
 }

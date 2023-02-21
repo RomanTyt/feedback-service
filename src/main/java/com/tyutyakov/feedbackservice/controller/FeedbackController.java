@@ -46,26 +46,26 @@ public class FeedbackController {
         feedbackService.deleteFeedbackById(feedbackId);
     }
 
-    @PostMapping("/{feedbackId}/CommentToFeedback")
+    @PostMapping("/{feedbackId}/comment")
     @Operation(summary = "Добавить комментарий к отзыву от другого пользователя")
     @ResponseStatus(HttpStatus.CREATED)
     public String addCommentToFeedback(@PathVariable String feedbackId, @RequestBody CommentToFeedbackCreateDTO commentToFeedbackCreateDTO){
         return feedbackService.addCommentToFeedback(feedbackId, commentToFeedbackCreateDTO);
     }
 
-    @GetMapping("/{feedbackId}/CommentToFeedback")
+    @GetMapping("/{feedbackId}/comment")
     @Operation(summary = "Получить все комментарии к отзыву")
     public List<CommentToFeedbackGetDTO> getAllCommentToFeedback(@PathVariable String feedbackId){
         return feedbackService.getAllCommentToFeedback(feedbackId);
     }
 
-    @PutMapping("/{feedbackId}/RateFeedback")
+    @PutMapping("/{feedbackId}/rate")
     @Operation(summary = "Оценить отзыв(лайк/дизлайк)")
     public String rateFeedback(@PathVariable String feedbackId, @RequestBody FeedbackRateDTO feedbackRateDTO){
         return feedbackService.rateFeedback(feedbackId, feedbackRateDTO);
     }
 
-    @PostMapping("/{feedbackId}/OrganizationReply")
+    @PostMapping("/{feedbackId}/reply")
     @Operation(summary = "Добавить ответ на отзыв от организации")
     @ResponseStatus(HttpStatus.CREATED)
     public String addOrganizationReply(@PathVariable String feedbackId, @RequestBody OrganizationReplyCreateDTO organizationReplyCreateDTO) {
@@ -76,7 +76,7 @@ public class FeedbackController {
         }
     }
 
-    @GetMapping("/{feedbackId}/OrganizationReply")
+    @GetMapping("/{feedbackId}/reply")
     @Operation(summary = "Получить ответ на отзыв от организации")
     public OrganizationReplyGetDTO getOrganizationReply(@PathVariable String feedbackId){
         return feedbackService.getOrganizationReply(feedbackId);
