@@ -8,10 +8,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
@@ -32,29 +30,19 @@ class FeedbackServiceTest {
     private OrganizationReplyRepository organizationReplyRepository ;
     @Mock
     private CommentToFeedbackRepository commentToFeedbackRepository;
-    @Spy
-    private FeedbackMapper feedbackMapper = new FeedbackMapperImpl();
-    @Spy
-    private OrganizationReplyMapper organizationReplyMapper = new OrganizationReplyMapperImpl();
-    @Spy
-    private CommentToFeedbackMapper commentToFeedbackMapper = new CommentToFeedbackMapperImpl();
 
-    @InjectMocks
-    private FeedbackService feedbackService;
+    private FeedbackService sut;
 
-    private final List<CommentToFeedback> comment = new ArrayList<>();
     private final String feedbackId = "1c5afdce-f34e-445a-9d25-d548b5ad515c";
     private final LocalDateTime localDateTime = LocalDateTime.now();
 
-
-    private final CommentToFeedback commentToFeedback = new CommentToFeedback("e8f191f9-c133-4901-a44c-99200ec6202a",
-                                                                "Вова", localDateTime, "текст", null);
+    private final List<CommentToFeedback> comment = new ArrayList<>();
     private final CommentToFeedbackCreateDTO commentToFeedbackCreateDTO = new CommentToFeedbackCreateDTO("Вова", "текст");
-
+    private final CommentToFeedback commentToFeedback = new CommentToFeedback("e8f191f9-c133-4901-a44c-99200ec6202a",
+            "Вова", localDateTime, "текст", null);
 
     private final OrganizationReply organizationReply = new OrganizationReply("1212121-222222-333333-444444", localDateTime, "", null);
     private final OrganizationReplyCreateDTO organizationReplyCreateDTO = new OrganizationReplyCreateDTO("текст ответа");
-
 
     private final FeedbackRateDTO feedbackRateDTO = new FeedbackRateDTO(true);
     private final FeedbackCreateDTO feedbackCreateDTO = new FeedbackCreateDTO("Вася", "1111111-222222-333333-444444",
@@ -68,20 +56,19 @@ class FeedbackServiceTest {
     private final FeedbackUpdateDTO feedbackUpdateDTO = new FeedbackUpdateDTO("Всё плохо", "Нет", "Есть",
             2, 1);
 
-
     @BeforeEach
-    void prepare(){
+    void setUp(){
         comment.add(commentToFeedback);
         comment.add(commentToFeedback);
-//        feedbackService = new FeedbackService(feedbackRepository,  organizationReplyRepository, commentToFeedbackRepository,
-//                new FeedbackMapperImpl(), new OrganizationReplyMapperImpl(), new CommentToFeedbackMapperImpl());
+        sut = new FeedbackService(feedbackRepository,  organizationReplyRepository, commentToFeedbackRepository,
+                new FeedbackMapperImpl(), new OrganizationReplyMapperImpl(), new CommentToFeedbackMapperImpl());
     }
 
     @Test
     @DisplayName("Проверка наличия отзыва в БД")
     void getFeedbackById() {
         Mockito.doReturn(Optional.of(feedback)).when(feedbackRepository).findById(feedbackId);
-        Feedback result = feedbackService.getFeedbackById(feedbackId);
+        Feedback result = sut.getFeedbackById(feedbackId);
         assertEquals(feedback, result);
     }
 
@@ -89,14 +76,14 @@ class FeedbackServiceTest {
     @DisplayName("Проверка наличия отзыва в БД(ошибка - отзыв не найден)")
     void getFeedbackByIdException() {
         Mockito.doThrow(RuntimeException.class).when(feedbackRepository).findById(any());
-        assertThrows(RuntimeException.class, () -> feedbackService.getFeedbackById(feedbackId));
+        assertThrows(RuntimeException.class, () -> sut.getFeedbackById(feedbackId));
     }
 
     @Test
     @DisplayName("Найти отзыв по id заказа")
     void findFeedbackByOrderId() {
         Mockito.doReturn(Optional.of(feedback)).when(feedbackRepository).findFeedbackByOrderID(feedbackId);
-        Feedback result = feedbackService.findFeedbackByOrderId(feedbackId);
+        Feedback result = sut.findFeedbackByOrderId(feedbackId);
         assertEquals(feedback.getFeedbackID(), result.getFeedbackID());
     }
 
@@ -104,14 +91,14 @@ class FeedbackServiceTest {
     @DisplayName("Найти отзыв по id заказа(ошибка - отзыв не найден)")
     void findFeedbackByOrderIdException() {
         Mockito.doThrow(RuntimeException.class).when(feedbackRepository).findFeedbackByOrderID(any());
-        assertThrows(RuntimeException.class, () -> feedbackService.findFeedbackByOrderId(feedbackId));
+        assertThrows(RuntimeException.class, () -> sut.findFeedbackByOrderId(feedbackId));
     }
 
     @Test
     @DisplayName("Найти отзыв по id")
     void findFeedbackById() {
         Mockito.doReturn(Optional.of(feedback)).when(feedbackRepository).findById(feedbackId);
-        FeedbackGetDTO result = feedbackService.findFeedbackById(feedbackId);
+        FeedbackGetDTO result = sut.findFeedbackById(feedbackId);
         assertEquals(feedbackGetDTO.getOrderID(), result.getOrderID());
         assertEquals(feedbackGetDTO.getFeedbackText(), result.getFeedbackText());
     }
@@ -120,7 +107,7 @@ class FeedbackServiceTest {
     @DisplayName("Создать новый отзыв")
     void createNewFeedback() {
         Mockito.doReturn(feedback).when(feedbackRepository).save(any());
-        String resultId = feedbackService.createNewFeedback(feedbackCreateDTO);
+        String resultId = sut.createNewFeedback(feedbackCreateDTO);
         assertEquals(feedback.getFeedbackID(), resultId);
     }
 
@@ -128,7 +115,7 @@ class FeedbackServiceTest {
     @DisplayName("Создать новый отзыв(ошибка - отзыв существует)")
     void createNewFeedbackException() {
         Mockito.doReturn(Optional.of(feedback)).when(feedbackRepository).findFeedbackByOrderID(any());
-        String result = feedbackService.createNewFeedback(feedbackCreateDTO);
+        String result = sut.createNewFeedback(feedbackCreateDTO);
         assertEquals("Отзыв к этому заказу уже есть в БД!", result);
     }
 
@@ -136,7 +123,7 @@ class FeedbackServiceTest {
     @DisplayName("Редактировать отзыв")
     void editFeedback() {
         Mockito.doReturn(Optional.of(feedback)).when(feedbackRepository).findById(any());
-        FeedbackGetDTO result = feedbackService.editFeedback(feedbackId, feedbackUpdateDTO);
+        FeedbackGetDTO result = sut.editFeedback(feedbackId, feedbackUpdateDTO);
         assertEquals(feedbackUpdateDTO.getFeedbackText(), result.getFeedbackText());
         assertEquals(feedbackUpdateDTO.getDeliverySpeedAssessment(), result.getDeliverySpeedAssessment());
     }
@@ -145,7 +132,7 @@ class FeedbackServiceTest {
     @DisplayName("Удалить отзыв")
     void deleteFeedbackById() {
         Mockito.doReturn(Optional.of(feedback)).when(feedbackRepository).findById(any());
-        feedbackService.deleteFeedbackById(feedback.getFeedbackID());
+        sut.deleteFeedbackById(feedback.getFeedbackID());
         Mockito.verify(feedbackRepository, Mockito.times(1)).deleteById(feedback.getFeedbackID());
     }
 
@@ -154,7 +141,7 @@ class FeedbackServiceTest {
     void addCommentToFeedback() {
         Mockito.doReturn(Optional.of(feedback)).when(feedbackRepository).findById(feedbackId);
         Mockito.doReturn(commentToFeedback).when(commentToFeedbackRepository).save(any());
-        String result = feedbackService.addCommentToFeedback(feedbackId, commentToFeedbackCreateDTO);
+        String result = sut.addCommentToFeedback(feedbackId, commentToFeedbackCreateDTO);
         assertEquals(commentToFeedback.getCommentID(), result);
     }
 
@@ -162,7 +149,7 @@ class FeedbackServiceTest {
     @DisplayName("Получить все комментарии к отзыву")
     void getAllCommentToFeedback() {
         Mockito.doReturn(Optional.of(feedback)).when(feedbackRepository).findById(feedbackId);
-        List<CommentToFeedbackGetDTO> result = feedbackService.getAllCommentToFeedback(feedbackId);
+        List<CommentToFeedbackGetDTO> result = sut.getAllCommentToFeedback(feedbackId);
         assertEquals(feedback.getComments().size(), result.size());
     }
 
@@ -171,12 +158,9 @@ class FeedbackServiceTest {
     void rateFeedback() {
         Mockito.doReturn(Optional.of(feedback)).when(feedbackRepository).findById(feedbackId);
         Mockito.doReturn(feedback).when(feedbackRepository).save(feedback);
-        Feedback testFeedback = new Feedback();
-        testFeedback.setFeedbackRatingLike(feedback.getFeedbackRatingLike());
-        testFeedback.setFeedbackRatingDislike(feedback.getFeedbackRatingDislike());
-        testFeedback.rateFeedback(feedbackRateDTO.getRate());
+        Feedback testFeedback = getTestFeedback();
         String expectedResult = "Like - " + testFeedback.getFeedbackRatingLike() + ", Dislike - " + testFeedback.getFeedbackRatingDislike();
-        String result = feedbackService.rateFeedback(feedbackId, feedbackRateDTO);
+        String result = sut.rateFeedback(feedbackId, feedbackRateDTO);
         assertEquals(expectedResult, result);
     }
 
@@ -185,7 +169,7 @@ class FeedbackServiceTest {
     void addOrganizationReply() {
         Mockito.doReturn(organizationReply).when(organizationReplyRepository).save(any());
         Mockito.doReturn(Optional.of(feedback)).when(feedbackRepository).findById(feedbackId);
-        String result = feedbackService.addOrganizationReply(feedbackId, organizationReplyCreateDTO);
+        String result = sut.addOrganizationReply(feedbackId, organizationReplyCreateDTO);
         assertEquals(organizationReply.getOrganizationReplyID(), result);
     }
 
@@ -193,7 +177,15 @@ class FeedbackServiceTest {
     @DisplayName("Получить ответ на отзыв от организации")
     void getOrganizationReply() {
         Mockito.doReturn(Optional.of(feedback)).when(feedbackRepository).findById(feedbackId);
-        OrganizationReplyGetDTO result = feedbackService.getOrganizationReply(feedbackId);
+        OrganizationReplyGetDTO result = sut.getOrganizationReply(feedbackId);
         assertEquals(organizationReply.getOrganizationReplyID(), result.getOrganizationReplyID());
+    }
+
+    private Feedback getTestFeedback() {
+        Feedback testFeedback = new Feedback();
+        testFeedback.setFeedbackRatingLike(feedback.getFeedbackRatingLike());
+        testFeedback.setFeedbackRatingDislike(feedback.getFeedbackRatingDislike());
+        testFeedback.rateFeedback(feedbackRateDTO.getRate());
+        return testFeedback;
     }
 }
