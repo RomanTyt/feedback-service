@@ -14,7 +14,7 @@ public interface CommentToFeedbackMapper {
 
     CommentToFeedbackCreateDTO commentToFeedbackMapToCreateDTO(CommentToFeedback commentToFeedback);
 
-    List<CommentToFeedbackGetDTO> convertListCommentToFeedbackToListCommentToFeedbackGetDTO(List<CommentToFeedback> CommentToFeedback);
+    List<CommentToFeedbackGetDTO> convertListCommentToFeedbackToListCommentToFeedbackGetDTO(List<CommentToFeedback> commentToFeedback);
 
     CommentToFeedback getDtoMapToCommentToFeedback(CommentToFeedbackGetDTO commentToFeedbackGetDTO);
 
