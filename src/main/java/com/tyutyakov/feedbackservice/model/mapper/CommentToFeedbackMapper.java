@@ -20,3 +20,4 @@ public interface CommentToFeedbackMapper {
 
     CommentToFeedbackGetDTO commentToFeedbackMapToGetDTO(CommentToFeedback commentToFeedback);
 }
+
