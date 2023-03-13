@@ -18,5 +18,4 @@ public interface FeedbackRepository extends JpaRepository<Feedback, String> {
             return false;
         }
     }
-
 }
