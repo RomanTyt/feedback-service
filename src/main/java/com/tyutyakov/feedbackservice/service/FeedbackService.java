@@ -47,6 +47,16 @@ public class FeedbackService {
     }
 
     /**
+     * Найти отзыв по id заказа
+     *
+     * @param orderID  id заказа
+     * @return  отзыв(entity) или RuntimeException(если не найден)
+     */
+    public Feedback findFeedbackByOrderId(String orderID){
+        return feedbackRepository.findFeedbackByOrderID(orderID).orElseThrow(() -> new RuntimeException());
+    }
+
+    /**
      * Найти отзыв по id
      *
      * @param feedbackId  id отзыва
@@ -62,10 +72,15 @@ public class FeedbackService {
      * @param feedbackCreateDTO  отзыв(DTO)
      * @return id созданного отзыва
      */
+
     @Transactional()
     public String createNewFeedback(FeedbackCreateDTO feedbackCreateDTO){
-        Feedback feedback = feedbackMapper.feedbackCreateDTOMapToFeedback(feedbackCreateDTO);
-        return feedbackRepository.save(feedback).getFeedbackID();
+        if (feedbackRepository.checkFeedbackContainsInDB(feedbackCreateDTO.getOrderID())){
+            return "Отзыв к этому заказу уже есть в БД!";
+        } else {
+            Feedback feedback = feedbackMapper.feedbackCreateDTOMapToFeedback(feedbackCreateDTO);
+            return feedbackRepository.save(feedback).getFeedbackID();
+        }
     }
 
     /**

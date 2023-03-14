@@ -1,14 +1,12 @@
 package com.tyutyakov.feedbackservice.model.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Setter
 @Getter
+@EqualsAndHashCode
 public class OrganizationReplyCreateDTO {
 
     private String organizationReplyText;

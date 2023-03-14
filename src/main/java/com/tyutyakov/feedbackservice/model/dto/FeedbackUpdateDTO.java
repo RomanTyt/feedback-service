@@ -1,14 +1,12 @@
 package com.tyutyakov.feedbackservice.model.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Setter
 @Getter
+@EqualsAndHashCode
 public class FeedbackUpdateDTO {
 
     private String feedbackText;
