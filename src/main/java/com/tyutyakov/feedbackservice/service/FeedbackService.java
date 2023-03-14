@@ -72,16 +72,7 @@ public class FeedbackService {
      * @param feedbackCreateDTO  отзыв(DTO)
      * @return id созданного отзыва
      */
-//    @Transactional()
-//    public String createNewFeedback(FeedbackCreateDTO feedbackCreateDTO){
-//        try {
-//            findFeedbackByOrderId(feedbackCreateDTO.getOrderID());
-//            return "Отзыв к этому заказу уже есть в БД!";
-//        } catch (RuntimeException e) {
-//            Feedback feedback = feedbackMapper.feedbackCreateDTOMapToFeedback(feedbackCreateDTO);
-//            return feedbackRepository.save(feedback).getFeedbackID();
-//        }
-//    }
+
     @Transactional()
     public String createNewFeedback(FeedbackCreateDTO feedbackCreateDTO){
         if (feedbackRepository.checkFeedbackContainsInDB(feedbackCreateDTO.getOrderID())){
