@@ -163,15 +163,15 @@ class FeedbackControllerTest {
                 .andExpect(jsonPath("$").value(listJson));
     }
 
-    @Test
-    void getAllCommentToFeedback2() throws Exception {
-        Mockito.doReturn(commentToFeedbackGetDTOList).when(sut).getAllCommentToFeedback(feedbackId);
-        JSONArray listJson = (JSONArray) jsonParser.parse(new FileReader("src/test/resources/commentArray.json"));
-        mockMvc.perform(get("/api/v1/feedbacks/{feedbackId}/comment", feedbackId))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$").value(listJson));
-    }
+//    @Test
+//    void getAllCommentToFeedback2() throws Exception {
+//        Mockito.doReturn(commentToFeedbackGetDTOList).when(sut).getAllCommentToFeedback(feedbackId);
+//        JSONArray listJson = (JSONArray) jsonParser.parse(new FileReader("src/test/resources/commentArray.json"));
+//        mockMvc.perform(get("/api/v1/feedbacks/{feedbackId}/comment", feedbackId))
+//                .andDo(print())
+//                .andExpect(status().isOk())
+//                .andExpect(jsonPath("$").value(listJson));
+//    }
 
     @Test
     void rateFeedback() throws Exception {
