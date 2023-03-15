@@ -72,14 +72,14 @@ class FeedbackControllerTest {
         commentToFeedbackGetDTOList.add(commentToFeedbackGetDTO);
     }
 
-//    @Test
-//    void findFeedbackById() throws Exception {
-//        Mockito.doReturn(feedbackGetDTO).when(sut).findFeedbackById(feedbackId);
-//        mockMvc.perform(get("/api/v1/feedbacks/{feedbackId}", feedbackId))
-//                .andDo(print())
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$.orderID").value(feedbackGetDTO.getOrderID()));
-//    }
+    @Test
+    void findFeedbackById() throws Exception {
+        Mockito.doReturn(feedbackGetDTO).when(sut).findFeedbackById(feedbackId);
+        mockMvc.perform(get("/api/v1/feedbacks/{feedbackId}", feedbackId))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.orderID").value(feedbackGetDTO.getOrderID()));
+    }
 
     @Test
     void createNewFeedback() throws Exception {
