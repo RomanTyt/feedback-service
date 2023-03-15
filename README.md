@@ -16,4 +16,4 @@
 * _Liquibase_ - автоматическое развертывание таблиц, необходимых для начала работы
 * _Swagger_ - автоматически генерирует спецификацию проекта
 
-[![codecov](https://codecov.io/gh/RomanTyt/feedback-service/branch/develop/graph/badge.svg?token=3SCTM2S7PD)](https://codecov.io/gh/RomanTyt/feedback-service)
+[![codecov](https://codecov.io/gh/RomanTyt/feedback-service/branch/develop/graphs/sunburst.svg?token=3SCTM2S7PD)](https://codecov.io/gh/RomanTyt/feedback-service)
