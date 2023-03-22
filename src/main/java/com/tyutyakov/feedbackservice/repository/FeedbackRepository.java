@@ -18,4 +18,6 @@ public interface FeedbackRepository extends JpaRepository<Feedback, String> {
             return false;
         }
     }
+
+    boolean existsFeedbackByOrderID(String orderID);
 }

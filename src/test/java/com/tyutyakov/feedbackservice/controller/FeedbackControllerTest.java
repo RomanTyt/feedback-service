@@ -45,7 +45,7 @@ class FeedbackControllerTest {
     private final CommentToFeedback commentToFeedback = new CommentToFeedback("e8f191f9-c133-4901-a44c-99200ec6202a",
             "Вова", localDateTime, "текст", null);
     private final CommentToFeedbackGetDTO commentToFeedbackGetDTO = new CommentToFeedbackGetDTO("e8f191f9-c133-4901-a44c-99200ec6202a",
-             localDateTime, "Вова", "текст");
+             localDateTime, "Вова", "Текст");
     private final CommentToFeedbackCreateDTO commentToFeedbackCreateDTO = new CommentToFeedbackCreateDTO("Вова", "текст");
 
     private final OrganizationReply organizationReply = new OrganizationReply("1212121-222222-333333-444444", localDateTime, "текст", null);
@@ -163,15 +163,15 @@ class FeedbackControllerTest {
                 .andExpect(jsonPath("$").value(listJson));
     }
 
-//    @Test
-//    void getAllCommentToFeedback2() throws Exception {
-//        Mockito.doReturn(commentToFeedbackGetDTOList).when(sut).getAllCommentToFeedback(feedbackId);
-//        JSONArray listJson = (JSONArray) jsonParser.parse(new FileReader("src/test/resources/commentArray.json"));
-//        mockMvc.perform(get("/api/v1/feedbacks/{feedbackId}/comment", feedbackId))
-//                .andDo(print())
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$").value(listJson));
-//    }
+    @Test
+    void getAllCommentToFeedback2() throws Exception {
+        Mockito.doReturn(commentToFeedbackGetDTOList).when(sut).getAllCommentToFeedback(feedbackId);
+        JSONArray listJson = (JSONArray) jsonParser.parse(new FileReader("src/test/resources/commentArray.json"));
+        mockMvc.perform(get("/api/v1/feedbacks/{feedbackId}/comment", feedbackId))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").value(listJson));
+    }
 
     @Test
     void rateFeedback() throws Exception {
