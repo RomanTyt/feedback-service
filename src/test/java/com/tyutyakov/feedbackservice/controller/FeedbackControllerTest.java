@@ -17,7 +17,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.io.FileReader;
 import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -36,6 +35,7 @@ class FeedbackControllerTest {
     private MockMvc mockMvc;
     @Autowired
     private ObjectMapper objectMapper;
+    JSONParser jsonParser= new JSONParser(JSONParser.DEFAULT_PERMISSIVE_MODE);
 
     private final List<CommentToFeedback> commentToFeedbackList = new ArrayList<>();
     private final List<CommentToFeedbackGetDTO> commentToFeedbackGetDTOList = new ArrayList<>();
@@ -63,8 +63,6 @@ class FeedbackControllerTest {
             4, 5, 15, 40);
     private final FeedbackUpdateDTO feedbackUpdateDTO = new FeedbackUpdateDTO("Всё плохо", "Нет", "Есть",
             2, 1);
-
-        JSONParser jsonParser= new JSONParser(JSONParser.DEFAULT_PERMISSIVE_MODE);
 
     @BeforeEach
     void setUp() {
@@ -146,27 +144,8 @@ class FeedbackControllerTest {
 
     @Test
     void getAllCommentToFeedback() throws Exception {
-        Mockito.doReturn(commentToFeedbackList).when(sut).getAllCommentToFeedback(feedbackId);
-        mockMvc.perform(get("/api/v1/feedbacks/{feedbackId}/comment", feedbackId))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$").isArray());
-    }
-
-    @Test
-    void getAllCommentToFeedback1() throws Exception {
         Mockito.doReturn(commentToFeedbackGetDTOList).when(sut).getAllCommentToFeedback(feedbackId);
         JSONArray listJson = (JSONArray) jsonParser.parse(objectMapper.writeValueAsString(commentToFeedbackGetDTOList));
-        mockMvc.perform(get("/api/v1/feedbacks/{feedbackId}/comment", feedbackId))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$").value(listJson));
-    }
-
-    @Test
-    void getAllCommentToFeedback2() throws Exception {
-        Mockito.doReturn(commentToFeedbackGetDTOList).when(sut).getAllCommentToFeedback(feedbackId);
-        JSONArray listJson = (JSONArray) jsonParser.parse(new FileReader("src/test/resources/commentArray.json"));
         mockMvc.perform(get("/api/v1/feedbacks/{feedbackId}/comment", feedbackId))
                 .andDo(print())
                 .andExpect(status().isOk())
