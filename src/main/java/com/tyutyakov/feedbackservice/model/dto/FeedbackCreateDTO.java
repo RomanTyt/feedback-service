@@ -1,9 +1,8 @@
 package com.tyutyakov.feedbackservice.model.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+
+import java.util.Objects;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -25,4 +24,18 @@ public class FeedbackCreateDTO {
 
     private int productQualityAssessment;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        FeedbackCreateDTO that = (FeedbackCreateDTO) o;
+
+        return Objects.equals(orderID, that.orderID);
+    }
+
+    @Override
+    public int hashCode() {
+        return orderID != null ? orderID.hashCode() : 0;
+    }
 }
