@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -36,4 +37,18 @@ public class FeedbackGetDTO {
 
     private int feedbackRatingDislike;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        FeedbackGetDTO that = (FeedbackGetDTO) o;
+
+        return Objects.equals(orderID, that.orderID);
+    }
+
+    @Override
+    public int hashCode() {
+        return orderID != null ? orderID.hashCode() : 0;
+    }
 }

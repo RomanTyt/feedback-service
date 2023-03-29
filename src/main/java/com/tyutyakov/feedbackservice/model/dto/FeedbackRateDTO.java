@@ -1,5 +1,8 @@
 package com.tyutyakov.feedbackservice.model.dto;
 
+import lombok.EqualsAndHashCode;
+
+@EqualsAndHashCode
 public class FeedbackRateDTO {
     private boolean rate;
 
