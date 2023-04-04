@@ -5,4 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface OrganizationReplyRepository extends JpaRepository<OrganizationReply, String> {}
+public interface OrganizationReplyRepository extends JpaRepository<OrganizationReply, String> {
+    boolean existsOrganizationReplyByFeedback_FeedbackID (String feedbackId);
+}

@@ -1,5 +1,7 @@
 package com.tyutyakov.feedbackservice.service;
 
+import com.tyutyakov.feedbackservice.exception.FeedbackExistException;
+import com.tyutyakov.feedbackservice.exception.FeedbackNotFoundException;
 import com.tyutyakov.feedbackservice.model.dto.*;
 import com.tyutyakov.feedbackservice.model.entity.*;
 import com.tyutyakov.feedbackservice.model.mapper.*;
@@ -75,8 +77,8 @@ class FeedbackServiceTest {
     @Test
     @DisplayName("Проверка наличия отзыва в БД(ошибка - отзыв не найден)")
     void getFeedbackByIdException() {
-        Mockito.doThrow(RuntimeException.class).when(feedbackRepository).findById(any());
-        assertThrows(RuntimeException.class, () -> sut.getFeedbackById(feedbackId));
+        Mockito.doThrow(FeedbackNotFoundException.class).when(feedbackRepository).findById(any());
+        assertThrows(FeedbackNotFoundException.class, () -> sut.getFeedbackById(feedbackId));
     }
 
     @Test
@@ -90,8 +92,8 @@ class FeedbackServiceTest {
     @Test
     @DisplayName("Найти отзыв по id заказа(ошибка - отзыв не найден)")
     void findFeedbackByOrderIdException() {
-        Mockito.doThrow(RuntimeException.class).when(feedbackRepository).findFeedbackByOrderID(any());
-        assertThrows(RuntimeException.class, () -> sut.findFeedbackByOrderId(feedbackId));
+        Mockito.doThrow(FeedbackNotFoundException.class).when(feedbackRepository).findFeedbackByOrderID(any());
+        assertThrows(FeedbackNotFoundException.class, () -> sut.findFeedbackByOrderId(feedbackId));
     }
 
     @Test
@@ -115,8 +117,7 @@ class FeedbackServiceTest {
     @DisplayName("Создать новый отзыв(ошибка - отзыв существует)")
     void createNewFeedbackException() {
         Mockito.doReturn(true).when(feedbackRepository).existsFeedbackByOrderID(any());
-        String result = sut.createNewFeedback(feedbackCreateDTO);
-        assertEquals("Отзыв к этому заказу уже есть в БД!", result);
+        assertThrows(FeedbackExistException.class, () -> sut.createNewFeedback(feedbackCreateDTO));
     }
 
     @Test
