@@ -1,4 +1,4 @@
-package com.tyutyakov.feedbackservice.exception;
+package com.tyutyakov.feedbackservice.exception.error.exception;
 
 public class FeedbackExistException extends BusinessException {
     private final String errorCode = "1234";

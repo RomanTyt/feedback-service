@@ -1,7 +1,7 @@
 package com.tyutyakov.feedbackservice.service;
 
-import com.tyutyakov.feedbackservice.exception.FeedbackExistException;
-import com.tyutyakov.feedbackservice.exception.FeedbackNotFoundException;
+import com.tyutyakov.feedbackservice.exception.error.exception.FeedbackExistException;
+import com.tyutyakov.feedbackservice.exception.error.exception.FeedbackNotFoundException;
 import com.tyutyakov.feedbackservice.model.dto.*;
 import com.tyutyakov.feedbackservice.model.entity.*;
 import com.tyutyakov.feedbackservice.model.mapper.*;

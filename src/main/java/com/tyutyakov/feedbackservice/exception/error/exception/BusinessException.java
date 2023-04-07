@@ -1,4 +1,4 @@
-package com.tyutyakov.feedbackservice.exception;
+package com.tyutyakov.feedbackservice.exception.error.exception;
 
 public abstract class BusinessException extends RuntimeException {
     public abstract String getError();

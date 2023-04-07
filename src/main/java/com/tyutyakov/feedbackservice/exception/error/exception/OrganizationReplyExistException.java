@@ -1,4 +1,4 @@
-package com.tyutyakov.feedbackservice.exception;
+package com.tyutyakov.feedbackservice.exception.error.exception;
 
 public class OrganizationReplyExistException  extends BusinessException {
     private final String errorCode = "12345";

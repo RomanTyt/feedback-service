@@ -1,8 +1,8 @@
 package com.tyutyakov.feedbackservice.service;
 
-import com.tyutyakov.feedbackservice.exception.FeedbackExistException;
-import com.tyutyakov.feedbackservice.exception.FeedbackNotFoundException;
-import com.tyutyakov.feedbackservice.exception.OrganizationReplyExistException;
+import com.tyutyakov.feedbackservice.exception.error.exception.FeedbackExistException;
+import com.tyutyakov.feedbackservice.exception.error.exception.FeedbackNotFoundException;
+import com.tyutyakov.feedbackservice.exception.error.exception.OrganizationReplyExistException;
 import com.tyutyakov.feedbackservice.model.dto.*;
 import com.tyutyakov.feedbackservice.model.entity.CommentToFeedback;
 import com.tyutyakov.feedbackservice.model.entity.Feedback;

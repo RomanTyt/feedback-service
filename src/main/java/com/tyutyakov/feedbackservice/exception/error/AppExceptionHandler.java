@@ -1,5 +1,6 @@
-package com.tyutyakov.feedbackservice.exception;
+package com.tyutyakov.feedbackservice.exception.error;
 
+import com.tyutyakov.feedbackservice.exception.error.exception.BusinessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
