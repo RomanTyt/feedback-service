@@ -7,3 +7,4 @@ coverage:
 
 ignore:
   - "src/main/java/com/tyutyakov/feedbackservice/exception/error/exception"
+  - "src/main/java/com/tyutyakov/feedbackservice/exception/error/exception.AppError.java"
