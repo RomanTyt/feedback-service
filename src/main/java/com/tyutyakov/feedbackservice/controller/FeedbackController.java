@@ -69,11 +69,7 @@ public class FeedbackController {
     @Operation(summary = "Добавить ответ на отзыв от организации")
     @ResponseStatus(HttpStatus.CREATED)
     public String addOrganizationReply(@PathVariable String feedbackId, @RequestBody OrganizationReplyCreateDTO organizationReplyCreateDTO) {
-        try {
             return feedbackService.addOrganizationReply(feedbackId, organizationReplyCreateDTO);
-        } catch (Exception exception) {
-            return "Ответ на этот отзыв уже есть в БД.";
-        }
     }
 
     @GetMapping("/{feedbackId}/reply")

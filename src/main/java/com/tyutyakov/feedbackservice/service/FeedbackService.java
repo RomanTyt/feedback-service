@@ -1,5 +1,8 @@
 package com.tyutyakov.feedbackservice.service;
 
+import com.tyutyakov.feedbackservice.exception.error.exception.FeedbackExistException;
+import com.tyutyakov.feedbackservice.exception.error.exception.FeedbackNotFoundException;
+import com.tyutyakov.feedbackservice.exception.error.exception.OrganizationReplyExistException;
 import com.tyutyakov.feedbackservice.model.dto.*;
 import com.tyutyakov.feedbackservice.model.entity.CommentToFeedback;
 import com.tyutyakov.feedbackservice.model.entity.Feedback;
@@ -40,20 +43,20 @@ public class FeedbackService {
      * Проверка наличия отзыва в БД
      *
      * @param feedbackId  id отзыва
-     * @return отзыв(entity) или RuntimeException(если не найден)
+     * @return отзыв(entity) или FeedbackNotFoundException(если не найден)
      */
     public Feedback getFeedbackById(String feedbackId){
-        return feedbackRepository.findById(feedbackId).orElseThrow(() -> new RuntimeException());
+        return feedbackRepository.findById(feedbackId).orElseThrow(() -> new FeedbackNotFoundException());
     }
 
     /**
      * Найти отзыв по id заказа
      *
      * @param orderID  id заказа
-     * @return  отзыв(entity) или RuntimeException(если не найден)
+     * @return  отзыв(entity) или FeedbackNotFoundException(если не найден)
      */
     public Feedback findFeedbackByOrderId(String orderID){
-        return feedbackRepository.findFeedbackByOrderID(orderID).orElseThrow(() -> new RuntimeException());
+        return feedbackRepository.findFeedbackByOrderID(orderID).orElseThrow(() -> new FeedbackNotFoundException("123.1", "Отзыв к этому заказу не найден в БД."));
     }
 
     /**
@@ -70,16 +73,15 @@ public class FeedbackService {
      * Создать новый отзыв
      *
      * @param feedbackCreateDTO  отзыв(DTO)
-     * @return id созданного отзыва
+     * @return id созданного отзыва или FeedbackExistException(если ответ на этот отзыв уже есть в БД)
      */
-    @Transactional()
+    @Transactional
     public String createNewFeedback(FeedbackCreateDTO feedbackCreateDTO){
         if (feedbackRepository.existsFeedbackByOrderID(feedbackCreateDTO.getOrderID())){
-            return "Отзыв к этому заказу уже есть в БД!";
-        } else {
-            Feedback feedback = feedbackMapper.feedbackCreateDTOMapToFeedback(feedbackCreateDTO);
-            return feedbackRepository.save(feedback).getFeedbackID();
+            throw new FeedbackExistException();
         }
+        Feedback feedback = feedbackMapper.feedbackCreateDTOMapToFeedback(feedbackCreateDTO);
+        return feedbackRepository.save(feedback).getFeedbackID();
     }
 
     /**
@@ -158,9 +160,12 @@ public class FeedbackService {
      */
     @Transactional
     public String addOrganizationReply(String feedbackId, OrganizationReplyCreateDTO organizationReplyCreateDTO){
-        OrganizationReply organizationReply = organizationReplyMapper.dtoMapToOrganizationReply(organizationReplyCreateDTO);
-        organizationReply.setFeedback(getFeedbackById(feedbackId));
-        return organizationReplyRepository.save(organizationReply).getOrganizationReplyID();
+        if (organizationReplyRepository.existsOrganizationReplyByFeedback_FeedbackID(feedbackId)){
+            throw new OrganizationReplyExistException();
+        }
+            OrganizationReply organizationReply = organizationReplyMapper.dtoMapToOrganizationReply(organizationReplyCreateDTO);
+            organizationReply.setFeedback(getFeedbackById(feedbackId));
+            return organizationReplyRepository.save(organizationReply).getOrganizationReplyID();
     }
 
     /**
