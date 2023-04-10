@@ -2,6 +2,7 @@ package com.tyutyakov.feedbackservice.service;
 
 import com.tyutyakov.feedbackservice.exception.error.exception.FeedbackExistException;
 import com.tyutyakov.feedbackservice.exception.error.exception.FeedbackNotFoundException;
+import com.tyutyakov.feedbackservice.exception.error.exception.OrganizationReplyExistException;
 import com.tyutyakov.feedbackservice.model.dto.*;
 import com.tyutyakov.feedbackservice.model.entity.*;
 import com.tyutyakov.feedbackservice.model.mapper.*;
@@ -172,6 +173,13 @@ class FeedbackServiceTest {
         Mockito.doReturn(Optional.of(feedback)).when(feedbackRepository).findById(feedbackId);
         String result = sut.addOrganizationReply(feedbackId, organizationReplyCreateDTO);
         assertEquals(organizationReply.getOrganizationReplyID(), result);
+    }
+
+    @Test
+    @DisplayName("Добавить ответ на отзыв от организации(ошибка - \"Ответ на этот отзыв уже есть в БД.\")")
+    void addOrganizationReplyException() {
+        Mockito.doReturn(true).when(organizationReplyRepository).existsOrganizationReplyByFeedback_FeedbackID(any());
+        assertThrows(OrganizationReplyExistException.class, () -> sut.addOrganizationReply(feedbackId, organizationReplyCreateDTO));
     }
 
     @Test
