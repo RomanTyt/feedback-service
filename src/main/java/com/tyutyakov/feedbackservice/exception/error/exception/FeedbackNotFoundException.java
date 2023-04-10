@@ -13,7 +13,7 @@ public class FeedbackNotFoundException extends BusinessException{
     }
 
     @Override
-    public String getError() {
+    public String getErrorCode() {
         return errorCode;
     }
 

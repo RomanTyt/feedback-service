@@ -5,7 +5,7 @@ public class FeedbackExistException extends BusinessException {
     private final String errorDescription = "Отзыв к этому заказу уже есть в БД";
 
     @Override
-    public String getError() {
+    public String getErrorCode() {
         return errorCode;
     }
 

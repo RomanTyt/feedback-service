@@ -5,7 +5,7 @@ public class OrganizationReplyExistException  extends BusinessException {
     private final String errorDescription = "Ответ на этот отзыв уже есть в БД.";
 
     @Override
-    public String getError() {
+    public String getErrorCode() {
         return errorCode;
     }
 
