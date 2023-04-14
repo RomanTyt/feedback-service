@@ -6,5 +6,6 @@ coverage:
         threshold: 5%  # the leniency in hitting the target
 
 ignore:
-  - "src/main/java/com/tyutyakov/feedbackservice/exception/error/exception"
-  - "src/main/java/com/tyutyakov/feedbackservice/exception/error/AppError.java"
+  - "src/main/java/com/tyutyakov/feedbackservice/exception/AppError.java"
+  - "src/main/java/com/tyutyakov/feedbackservice/exception/BusinessException.java"
+  - "src/main/java/com/tyutyakov/feedbackservice/exception/Error.java"

@@ -1,4 +1,4 @@
-package com.tyutyakov.feedbackservice.exception.error;
+package com.tyutyakov.feedbackservice.exception;
 
 public class AppError {
     private String errorCode;

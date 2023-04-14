@@ -1,8 +1,7 @@
 package com.tyutyakov.feedbackservice.service;
 
-import com.tyutyakov.feedbackservice.exception.error.exception.FeedbackExistException;
-import com.tyutyakov.feedbackservice.exception.error.exception.FeedbackNotFoundException;
-import com.tyutyakov.feedbackservice.exception.error.exception.OrganizationReplyExistException;
+import com.tyutyakov.feedbackservice.exception.BusinessException;
+import com.tyutyakov.feedbackservice.exception.Error;
 import com.tyutyakov.feedbackservice.model.dto.*;
 import com.tyutyakov.feedbackservice.model.entity.*;
 import com.tyutyakov.feedbackservice.model.mapper.*;
@@ -65,6 +64,7 @@ class FeedbackServiceTest {
         comment.add(commentToFeedback);
         sut = new FeedbackService(feedbackRepository,  organizationReplyRepository, commentToFeedbackRepository,
                 new FeedbackMapperImpl(), new OrganizationReplyMapperImpl(), new CommentToFeedbackMapperImpl());
+
     }
 
     @Test
@@ -78,23 +78,23 @@ class FeedbackServiceTest {
     @Test
     @DisplayName("Проверка наличия отзыва в БД(ошибка - отзыв не найден)")
     void getFeedbackByIdException() {
-        Mockito.doThrow(FeedbackNotFoundException.class).when(feedbackRepository).findById(any());
-        assertThrows(FeedbackNotFoundException.class, () -> sut.getFeedbackById(feedbackId));
+        Mockito.doThrow(new BusinessException(Error.FEEDBACK_NOT_FOUND_EXCEPTION)).when(feedbackRepository).findById(any());
+        assertThrows(BusinessException.class, () -> sut.getFeedbackById(feedbackId));
     }
 
     @Test
     @DisplayName("Найти отзыв по id заказа")
     void findFeedbackByOrderId() {
-        Mockito.doReturn(Optional.of(feedback)).when(feedbackRepository).findFeedbackByOrderID(feedbackId);
+        Mockito.doReturn(Optional.of(feedback)).when(feedbackRepository).findFeedbackByOrderId(feedbackId);
         Feedback result = sut.findFeedbackByOrderId(feedbackId);
-        assertEquals(feedback.getFeedbackID(), result.getFeedbackID());
+        assertEquals(feedback.getFeedbackId(), result.getFeedbackId());
     }
 
     @Test
     @DisplayName("Найти отзыв по id заказа(ошибка - отзыв не найден)")
     void findFeedbackByOrderIdException() {
-        Mockito.doThrow(FeedbackNotFoundException.class).when(feedbackRepository).findFeedbackByOrderID(any());
-        assertThrows(FeedbackNotFoundException.class, () -> sut.findFeedbackByOrderId(feedbackId));
+        Mockito.doThrow(new BusinessException(Error.FEEDBACK_NOT_FOUND_EXCEPTION)).when(feedbackRepository).findFeedbackByOrderId(any());
+        assertThrows(BusinessException.class, () -> sut.findFeedbackByOrderId(feedbackId));
     }
 
     @Test
@@ -102,7 +102,7 @@ class FeedbackServiceTest {
     void findFeedbackById() {
         Mockito.doReturn(Optional.of(feedback)).when(feedbackRepository).findById(feedbackId);
         FeedbackGetDTO result = sut.findFeedbackById(feedbackId);
-        assertEquals(feedbackGetDTO.getOrderID(), result.getOrderID());
+        assertEquals(feedbackGetDTO.getOrderId(), result.getOrderId());
         assertEquals(feedbackGetDTO.getFeedbackText(), result.getFeedbackText());
     }
 
@@ -111,14 +111,14 @@ class FeedbackServiceTest {
     void createNewFeedback() {
         Mockito.doReturn(feedback).when(feedbackRepository).save(any());
         String resultId = sut.createNewFeedback(feedbackCreateDTO);
-        assertEquals(feedback.getFeedbackID(), resultId);
+        assertEquals(feedback.getFeedbackId(), resultId);
     }
 
     @Test
     @DisplayName("Создать новый отзыв(ошибка - отзыв существует)")
     void createNewFeedbackException() {
-        Mockito.doReturn(true).when(feedbackRepository).existsFeedbackByOrderID(any());
-        assertThrows(FeedbackExistException.class, () -> sut.createNewFeedback(feedbackCreateDTO));
+        Mockito.doReturn(true).when(feedbackRepository).existsFeedbackByOrderId(any());
+        assertThrows(BusinessException.class, () -> sut.createNewFeedback(feedbackCreateDTO));
     }
 
     @Test
@@ -134,8 +134,8 @@ class FeedbackServiceTest {
     @DisplayName("Удалить отзыв")
     void deleteFeedbackById() {
         Mockito.doReturn(Optional.of(feedback)).when(feedbackRepository).findById(any());
-        sut.deleteFeedbackById(feedback.getFeedbackID());
-        Mockito.verify(feedbackRepository, Mockito.times(1)).deleteById(feedback.getFeedbackID());
+        sut.deleteFeedbackById(feedback.getFeedbackId());
+        Mockito.verify(feedbackRepository, Mockito.times(1)).deleteById(feedback.getFeedbackId());
     }
 
     @Test
@@ -144,7 +144,7 @@ class FeedbackServiceTest {
         Mockito.doReturn(Optional.of(feedback)).when(feedbackRepository).findById(feedbackId);
         Mockito.doReturn(commentToFeedback).when(commentToFeedbackRepository).save(any());
         String result = sut.addCommentToFeedback(feedbackId, commentToFeedbackCreateDTO);
-        assertEquals(commentToFeedback.getCommentID(), result);
+        assertEquals(commentToFeedback.getCommentId(), result);
     }
 
     @Test
@@ -172,22 +172,31 @@ class FeedbackServiceTest {
         Mockito.doReturn(organizationReply).when(organizationReplyRepository).save(any());
         Mockito.doReturn(Optional.of(feedback)).when(feedbackRepository).findById(feedbackId);
         String result = sut.addOrganizationReply(feedbackId, organizationReplyCreateDTO);
-        assertEquals(organizationReply.getOrganizationReplyID(), result);
+        assertEquals(organizationReply.getOrganizationReplyId(), result);
     }
 
     @Test
     @DisplayName("Добавить ответ на отзыв от организации(ошибка - \"Ответ на этот отзыв уже есть в БД.\")")
     void addOrganizationReplyException() {
-        Mockito.doReturn(true).when(organizationReplyRepository).existsOrganizationReplyByFeedback_FeedbackID(any());
-        assertThrows(OrganizationReplyExistException.class, () -> sut.addOrganizationReply(feedbackId, organizationReplyCreateDTO));
+        Mockito.doReturn(true).when(organizationReplyRepository).existsOrganizationReplyByFeedback_feedbackId(any());
+        assertThrows(BusinessException.class, () -> sut.addOrganizationReply(feedbackId, organizationReplyCreateDTO));
     }
 
     @Test
     @DisplayName("Получить ответ на отзыв от организации")
     void getOrganizationReply() {
         Mockito.doReturn(Optional.of(feedback)).when(feedbackRepository).findById(feedbackId);
+        Mockito.doReturn(true).when(organizationReplyRepository).existsOrganizationReplyByFeedback_feedbackId(any());
         OrganizationReplyGetDTO result = sut.getOrganizationReply(feedbackId);
-        assertEquals(organizationReply.getOrganizationReplyID(), result.getOrganizationReplyID());
+        assertEquals(organizationReply.getOrganizationReplyId(), result.getOrganizationReplyId());
+    }
+
+    @Test
+    @DisplayName("Получить ответ на отзыв от организации(\"Ответ на этот отзыв не найден в БД\")")
+    void getOrganizationReplyException() {
+        Mockito.doReturn(Optional.of(feedback)).when(feedbackRepository).findById(feedbackId);
+        Mockito.doReturn(false).when(organizationReplyRepository).existsOrganizationReplyByFeedback_feedbackId(any());
+        assertThrows(BusinessException.class, () -> sut.getOrganizationReply(feedbackId));
     }
 
     private Feedback getTestFeedback() {

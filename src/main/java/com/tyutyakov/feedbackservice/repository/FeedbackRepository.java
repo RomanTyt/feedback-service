@@ -8,6 +8,6 @@ import java.util.Optional;
 
 @Repository
 public interface FeedbackRepository extends JpaRepository<Feedback, String> {
-    Optional<Feedback> findFeedbackByOrderID(String orderID);
-    boolean existsFeedbackByOrderID(String orderID);
+    Optional<Feedback> findFeedbackByOrderId(String orderID);
+    boolean existsFeedbackByOrderId(String orderID);
 }

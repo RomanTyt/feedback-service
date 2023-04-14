@@ -27,7 +27,7 @@ public class Feedback {
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name = "feedback_id")
-    private String feedbackID;
+    private String feedbackId;
 
     @CreationTimestamp
     @Column(name = "date_time_creation")
@@ -41,7 +41,7 @@ public class Feedback {
     private String feedbackAuthorName;
 
     @Column(name = "order_id ")
-    private String orderID;
+    private String orderId;
 
     @Column(name = "feedback_text")
     private String feedbackText;
@@ -86,7 +86,7 @@ public class Feedback {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
         Feedback feedback = (Feedback) o;
-        return (feedbackID != null) && (Objects.equals(feedbackID, feedback.feedbackID));
+        return (feedbackId != null) && (Objects.equals(feedbackId, feedback.feedbackId));
     }
 
     @Override

@@ -14,7 +14,7 @@ import java.util.Objects;
 @Getter
 public class CommentToFeedbackGetDTO {
 
-    private String commentID;
+    private String commentId;
 
     private LocalDateTime dateTimeCreation;
 
@@ -29,11 +29,11 @@ public class CommentToFeedbackGetDTO {
 
         CommentToFeedbackGetDTO that = (CommentToFeedbackGetDTO) o;
 
-        return Objects.equals(commentID, that.commentID);
+        return Objects.equals(commentId, that.commentId);
     }
 
     @Override
     public int hashCode() {
-        return commentID != null ? commentID.hashCode() : 0;
+        return commentId != null ? commentId.hashCode() : 0;
     }
 }
