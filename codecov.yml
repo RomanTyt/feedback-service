@@ -9,3 +9,4 @@ ignore:
   - "src/main/java/com/tyutyakov/feedbackservice/exception/AppError.java"
   - "src/main/java/com/tyutyakov/feedbackservice/exception/BusinessException.java"
   - "src/main/java/com/tyutyakov/feedbackservice/exception/Error.java"
+  - "src/main/java/com/tyutyakov/feedbackservice/model/dto"
