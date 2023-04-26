@@ -117,7 +117,7 @@ class FeedbackServiceTest {
     @Test
     @DisplayName("Создать новый отзыв(ошибка - отзыв существует)")
     void createNewFeedbackException() {
-        Mockito.doReturn(true).when(feedbackRepository).existsFeedbackByOrderId(any());
+        Mockito.doReturn(Optional.of(feedback)).when(feedbackRepository).findFeedbackByOrderId(any());
         assertThrows(BusinessException.class, () -> sut.createNewFeedback(feedbackCreateDTO));
     }
 

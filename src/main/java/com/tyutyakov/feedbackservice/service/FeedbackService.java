@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -46,7 +47,7 @@ public class FeedbackService {
      * @exception BusinessException FEEDBACK_NOT_FOUND_EXCEPTION(если отзыв не найден)
      */
     public Feedback getFeedbackById(String feedbackId){
-        return feedbackRepository.findById(feedbackId).orElseThrow(() -> new BusinessException(Error.FEEDBACK_NOT_FOUND_EXCEPTION));
+        return feedbackRepository.findById(feedbackId).orElseThrow(() -> new BusinessException(Error.FEEDBACK_NOT_FOUND_EXCEPTION, feedbackId));
     }
 
     /**
@@ -57,7 +58,7 @@ public class FeedbackService {
      * @exception BusinessException FEEDBACK_NOT_FOUND_EXCEPTION(если отзыв не найден)
      */
     public Feedback findFeedbackByOrderId(String orderId){
-        return feedbackRepository.findFeedbackByOrderId(orderId).orElseThrow(() -> new BusinessException(Error.FEEDBACK_NOT_FOUND_EXCEPTION));
+        return feedbackRepository.findFeedbackByOrderId(orderId).orElseThrow(() -> new BusinessException(Error.FEEDBACK_NOT_FOUND_EXCEPTION, "к заказу " + orderId));
     }
 
     /**
@@ -80,8 +81,9 @@ public class FeedbackService {
      */
     @Transactional
     public String createNewFeedback(FeedbackCreateDTO feedbackCreateDTO){
-        if (feedbackRepository.existsFeedbackByOrderId(feedbackCreateDTO.getOrderId())){
-            throw new BusinessException(Error.FEEDBACK_EXIST_EXCEPTION);
+        Optional<Feedback> feedbackByOrderId = feedbackRepository.findFeedbackByOrderId(feedbackCreateDTO.getOrderId());
+        if (feedbackByOrderId.isPresent()){
+            throw new BusinessException(Error.FEEDBACK_EXIST_EXCEPTION, feedbackByOrderId.get().getFeedbackId());
         }
         Feedback feedback = feedbackMapper.feedbackCreateDTOMapToFeedback(feedbackCreateDTO);
         return feedbackRepository.save(feedback).getFeedbackId();
@@ -171,7 +173,7 @@ public class FeedbackService {
     @Transactional
     public String addOrganizationReply(String feedbackId, OrganizationReplyCreateDTO organizationReplyCreateDTO){
         if (organizationReplyRepository.existsOrganizationReplyByFeedback_feedbackId(feedbackId)){
-            throw new BusinessException(Error.ORGANIZATION_REPLY_EXIST_EXCEPTION);
+            throw new BusinessException(Error.ORGANIZATION_REPLY_EXIST_EXCEPTION, feedbackId);
         }
             OrganizationReply organizationReply = organizationReplyMapper.dtoMapToOrganizationReply(organizationReplyCreateDTO);
             organizationReply.setFeedback(getFeedbackById(feedbackId));
@@ -189,7 +191,7 @@ public class FeedbackService {
     public OrganizationReplyGetDTO getOrganizationReply(String feedbackId){
         Feedback feedback = getFeedbackById(feedbackId);
         if (!organizationReplyRepository.existsOrganizationReplyByFeedback_feedbackId(feedbackId)){
-            throw new BusinessException(Error.ORGANIZATION_REPLY_NOT_FOUND_EXCEPTION);
+            throw new BusinessException(Error.ORGANIZATION_REPLY_NOT_FOUND_EXCEPTION, feedbackId);
         }
         return organizationReplyMapper.organizationReplyMapToGetDTO(feedback.getOrganizationReply());
     }

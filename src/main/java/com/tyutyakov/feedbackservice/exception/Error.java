@@ -3,10 +3,10 @@ package com.tyutyakov.feedbackservice.exception;
 import org.springframework.http.HttpStatus;
 
 public enum Error {
-    FEEDBACK_EXIST_EXCEPTION("1234", "Отзыв к этому заказу уже есть в БД", HttpStatus.BAD_REQUEST),
-    FEEDBACK_NOT_FOUND_EXCEPTION("123", "Отзыв не найден в БД.", HttpStatus.BAD_REQUEST),
-    ORGANIZATION_REPLY_EXIST_EXCEPTION("12345", "Ответ на этот отзыв уже есть в БД.", HttpStatus.BAD_REQUEST),
-    ORGANIZATION_REPLY_NOT_FOUND_EXCEPTION("123456", "Ответ на этот отзыв не найден в БД", HttpStatus.BAD_REQUEST);
+    FEEDBACK_EXIST_EXCEPTION("1234", "Отзыв к заказу %s уже есть в БД", HttpStatus.BAD_REQUEST),
+    FEEDBACK_NOT_FOUND_EXCEPTION("123", "Отзыв %s не найден в БД.", HttpStatus.BAD_REQUEST),
+    ORGANIZATION_REPLY_EXIST_EXCEPTION("12345", "Ответ на отзыв %s уже есть в БД.", HttpStatus.BAD_REQUEST),
+    ORGANIZATION_REPLY_NOT_FOUND_EXCEPTION("123456", "Ответ на отзыв %s не найден в БД", HttpStatus.BAD_REQUEST);
 
     private final String errorCode;
     private final String errorDescription;

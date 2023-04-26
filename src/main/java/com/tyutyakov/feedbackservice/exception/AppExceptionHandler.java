@@ -8,6 +8,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class AppExceptionHandler {
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<AppError> handleException(BusinessException e) {
-        return new ResponseEntity<>(new AppError(e.getError().getErrorCode(), e.getError().getErrorDescription()), e.getError().getHttpStatus());
+        return new ResponseEntity<>(new AppError(e.getError().getErrorCode(), e.getMessage()), e.getError().getHttpStatus());
     }
 }
