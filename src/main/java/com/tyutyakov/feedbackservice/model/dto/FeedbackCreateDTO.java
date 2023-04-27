@@ -12,7 +12,7 @@ public class FeedbackCreateDTO {
 
     private String feedbackAuthorName;
 
-    private String orderID;
+    private String orderId;
 
     private String feedbackText;
 
@@ -31,11 +31,11 @@ public class FeedbackCreateDTO {
 
         FeedbackCreateDTO that = (FeedbackCreateDTO) o;
 
-        return Objects.equals(orderID, that.orderID);
+        return Objects.equals(orderId, that.orderId);
     }
 
     @Override
     public int hashCode() {
-        return orderID != null ? orderID.hashCode() : 0;
+        return orderId != null ? orderId.hashCode() : 0;
     }
 }

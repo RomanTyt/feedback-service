@@ -6,5 +6,11 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface OrganizationReplyRepository extends JpaRepository<OrganizationReply, String> {
-    boolean existsOrganizationReplyByFeedback_FeedbackID (String feedbackId);
+    /**
+     * Проверка наличия ответа организации на отзыв в БД
+     *
+     * @param feedbackId  id отзыва
+     * @return True или False
+     */
+    boolean existsOrganizationReplyByFeedback_feedbackId(String feedbackId);
 }

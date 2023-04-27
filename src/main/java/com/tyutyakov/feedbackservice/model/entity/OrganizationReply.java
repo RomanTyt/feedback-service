@@ -23,7 +23,7 @@ public class OrganizationReply  {
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name = "organization_reply_id")
-    private String organizationReplyID;
+    private String organizationReplyId;
 
     @CreationTimestamp
     @Column(name = "date_time_creation")
@@ -41,7 +41,7 @@ public class OrganizationReply  {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
         OrganizationReply that = (OrganizationReply) o;
-        return organizationReplyID != null && Objects.equals(organizationReplyID, that.organizationReplyID);
+        return organizationReplyId != null && Objects.equals(organizationReplyId, that.organizationReplyId);
     }
 
     @Override

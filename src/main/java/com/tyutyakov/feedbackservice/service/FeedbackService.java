@@ -1,8 +1,7 @@
 package com.tyutyakov.feedbackservice.service;
 
-import com.tyutyakov.feedbackservice.exception.error.exception.FeedbackExistException;
-import com.tyutyakov.feedbackservice.exception.error.exception.FeedbackNotFoundException;
-import com.tyutyakov.feedbackservice.exception.error.exception.OrganizationReplyExistException;
+import com.tyutyakov.feedbackservice.exception.BusinessException;
+import com.tyutyakov.feedbackservice.exception.Error;
 import com.tyutyakov.feedbackservice.model.dto.*;
 import com.tyutyakov.feedbackservice.model.entity.CommentToFeedback;
 import com.tyutyakov.feedbackservice.model.entity.Feedback;
@@ -17,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -43,20 +43,22 @@ public class FeedbackService {
      * Проверка наличия отзыва в БД
      *
      * @param feedbackId  id отзыва
-     * @return отзыв(entity) или FeedbackNotFoundException(если не найден)
+     * @return отзыв(entity)
+     * @exception BusinessException FEEDBACK_NOT_FOUND_EXCEPTION(если отзыв не найден)
      */
     public Feedback getFeedbackById(String feedbackId){
-        return feedbackRepository.findById(feedbackId).orElseThrow(() -> new FeedbackNotFoundException());
+        return feedbackRepository.findById(feedbackId).orElseThrow(() -> new BusinessException(Error.FEEDBACK_NOT_FOUND_EXCEPTION, feedbackId));
     }
 
     /**
      * Найти отзыв по id заказа
      *
-     * @param orderID  id заказа
-     * @return  отзыв(entity) или FeedbackNotFoundException(если не найден)
+     * @param orderId  id заказа
+     * @return  отзыв(entity)
+     * @exception BusinessException FEEDBACK_NOT_FOUND_EXCEPTION(если отзыв не найден)
      */
-    public Feedback findFeedbackByOrderId(String orderID){
-        return feedbackRepository.findFeedbackByOrderID(orderID).orElseThrow(() -> new FeedbackNotFoundException("123.1", "Отзыв к этому заказу не найден в БД."));
+    public Feedback findFeedbackByOrderId(String orderId){
+        return feedbackRepository.findFeedbackByOrderId(orderId).orElseThrow(() -> new BusinessException(Error.FEEDBACK_NOT_FOUND_EXCEPTION, "к заказу " + orderId));
     }
 
     /**
@@ -64,6 +66,7 @@ public class FeedbackService {
      *
      * @param feedbackId  id отзыва
      * @return  отзыв(DTO)
+     * @exception BusinessException FEEDBACK_NOT_FOUND_EXCEPTION(если отзыв не найден)
      */
     public FeedbackGetDTO findFeedbackById(String feedbackId){
         return feedbackMapper.feedbackMapToFeedbackGetDTO(getFeedbackById(feedbackId));
@@ -73,15 +76,17 @@ public class FeedbackService {
      * Создать новый отзыв
      *
      * @param feedbackCreateDTO  отзыв(DTO)
-     * @return id созданного отзыва или FeedbackExistException(если ответ на этот отзыв уже есть в БД)
+     * @return id созданного отзыва
+     * @exception BusinessException FEEDBACK_EXIST_EXCEPTION(если ответ на этот отзыв уже есть в БД)
      */
     @Transactional
     public String createNewFeedback(FeedbackCreateDTO feedbackCreateDTO){
-        if (feedbackRepository.existsFeedbackByOrderID(feedbackCreateDTO.getOrderID())){
-            throw new FeedbackExistException();
+        Optional<Feedback> feedbackByOrderId = feedbackRepository.findFeedbackByOrderId(feedbackCreateDTO.getOrderId());
+        if (feedbackByOrderId.isPresent()){
+            throw new BusinessException(Error.FEEDBACK_EXIST_EXCEPTION, feedbackByOrderId.get().getFeedbackId());
         }
         Feedback feedback = feedbackMapper.feedbackCreateDTOMapToFeedback(feedbackCreateDTO);
-        return feedbackRepository.save(feedback).getFeedbackID();
+        return feedbackRepository.save(feedback).getFeedbackId();
     }
 
     /**
@@ -90,6 +95,7 @@ public class FeedbackService {
      * @param feedbackId  id отзыва
      * @param feedbackUpdateDTO  отзыв(DTO)
      * @return  отзыв(DTO)
+     * @exception BusinessException FEEDBACK_NOT_FOUND_EXCEPTION(если отзыв не найден)
      */
     @Transactional
     public FeedbackGetDTO editFeedback(String feedbackId, FeedbackUpdateDTO feedbackUpdateDTO){
@@ -103,6 +109,7 @@ public class FeedbackService {
      * Удалить отзыв и связанные с ним данные(ответ организации и комментарии)
      *
      * @param feedbackId  id отзыва
+     * @exception BusinessException FEEDBACK_NOT_FOUND_EXCEPTION(если отзыв не найден)
      */
     @Transactional
     public void deleteFeedbackById(String feedbackId){
@@ -116,13 +123,14 @@ public class FeedbackService {
      * @param feedbackId  id отзыва
      * @param commentToFeedbackCreateDTO  комментарий(DTO)
      * @return  id комментария
+     * @exception BusinessException FEEDBACK_NOT_FOUND_EXCEPTION(если отзыв не найден)
      */
     @Transactional
     public String addCommentToFeedback(String feedbackId, CommentToFeedbackCreateDTO commentToFeedbackCreateDTO){
         Feedback feedback = getFeedbackById(feedbackId);
         CommentToFeedback commentToFeedback = commentToFeedbackMapper.createDtoMapToCommentToFeedback(commentToFeedbackCreateDTO);
         commentToFeedback.setFeedback(feedback);
-        return commentToFeedbackRepository.save(commentToFeedback).getCommentID();
+        return commentToFeedbackRepository.save(commentToFeedback).getCommentId();
     }
 
     /**
@@ -130,6 +138,7 @@ public class FeedbackService {
      *
      * @param feedbackId  id отзыва
      * @return  List комментариев
+     * @exception BusinessException FEEDBACK_NOT_FOUND_EXCEPTION(если отзыв не найден)
      */
     public List<CommentToFeedbackGetDTO> getAllCommentToFeedback(String feedbackId){
         Feedback feedback = getFeedbackById(feedbackId);
@@ -142,6 +151,7 @@ public class FeedbackService {
      * @param feedbackId  id отзыва
      * @param feedbackRateDTO  оценка(лайк/дизлайк)(DTO)
      * @return количество лайков и дизлайков этого отзыва
+     * @exception BusinessException FEEDBACK_NOT_FOUND_EXCEPTION(если отзыв не найден)
      */
     @Transactional
     public String rateFeedback(String feedbackId, FeedbackRateDTO feedbackRateDTO){
@@ -157,15 +167,17 @@ public class FeedbackService {
      * @param feedbackId  id отзыва
      * @param organizationReplyCreateDTO  ответ на отзыв от организации(DTO)
      * @return  id созданного ответа
+     * @exception BusinessException ORGANIZATION_REPLY_EXIST_EXCEPTION (если ответ на отзыв уже есть в БД)
+     * @exception BusinessException FEEDBACK_NOT_FOUND_EXCEPTION(если отзыв не найден)
      */
     @Transactional
     public String addOrganizationReply(String feedbackId, OrganizationReplyCreateDTO organizationReplyCreateDTO){
-        if (organizationReplyRepository.existsOrganizationReplyByFeedback_FeedbackID(feedbackId)){
-            throw new OrganizationReplyExistException();
+        if (organizationReplyRepository.existsOrganizationReplyByFeedback_feedbackId(feedbackId)){
+            throw new BusinessException(Error.ORGANIZATION_REPLY_EXIST_EXCEPTION, feedbackId);
         }
             OrganizationReply organizationReply = organizationReplyMapper.dtoMapToOrganizationReply(organizationReplyCreateDTO);
             organizationReply.setFeedback(getFeedbackById(feedbackId));
-            return organizationReplyRepository.save(organizationReply).getOrganizationReplyID();
+            return organizationReplyRepository.save(organizationReply).getOrganizationReplyId();
     }
 
     /**
@@ -173,9 +185,14 @@ public class FeedbackService {
      *
      * @param feedbackId  id отзыва
      * @return  ответ на отзыв от организации(DTO)
+     * @exception BusinessException ORGANIZATION_REPLY_NOT_FOUND_EXCEPTION(если ответ организации не найден)
+     * @exception BusinessException FEEDBACK_NOT_FOUND_EXCEPTION(если отзыв не найден)
      */
     public OrganizationReplyGetDTO getOrganizationReply(String feedbackId){
         Feedback feedback = getFeedbackById(feedbackId);
+        if (!organizationReplyRepository.existsOrganizationReplyByFeedback_feedbackId(feedbackId)){
+            throw new BusinessException(Error.ORGANIZATION_REPLY_NOT_FOUND_EXCEPTION, feedbackId);
+        }
         return organizationReplyMapper.organizationReplyMapToGetDTO(feedback.getOrganizationReply());
     }
 }

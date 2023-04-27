@@ -76,7 +76,7 @@ class FeedbackControllerTest {
         mockMvc.perform(get("/api/v1/feedbacks/{feedbackId}", feedbackId))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.orderID").value(feedbackGetDTO.getOrderID()));
+                .andExpect(jsonPath("$.orderId").value(feedbackGetDTO.getOrderId()));
     }
 
     @Test
@@ -87,7 +87,7 @@ class FeedbackControllerTest {
                         .content("""
                                 {
                                   "feedbackAuthorName": "Вася",
-                                  "orderID": "1111111-222222-333333-444444",
+                                  "orderId": "1111111-222222-333333-444444",
                                   "feedbackText": "Всё хорошо",
                                   "advantagesOfTheProduct": "Есть",
                                   "disadvantagesOfTheProduct": "Нет",
@@ -116,7 +116,7 @@ class FeedbackControllerTest {
                                 """))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.orderID").value(feedbackGetDTO.getOrderID()));
+                .andExpect(jsonPath("$.orderId").value(feedbackGetDTO.getOrderId()));
     }
 
     @Test
@@ -128,7 +128,7 @@ class FeedbackControllerTest {
 
     @Test
     void addCommentToFeedback() throws Exception {
-        Mockito.doReturn(commentToFeedback.getCommentID()).when(sut).addCommentToFeedback(feedbackId, commentToFeedbackCreateDTO);
+        Mockito.doReturn(commentToFeedback.getCommentId()).when(sut).addCommentToFeedback(feedbackId, commentToFeedbackCreateDTO);
         mockMvc.perform(post("/api/v1/feedbacks/{feedbackId}/comment", feedbackId)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content("""
@@ -139,7 +139,7 @@ class FeedbackControllerTest {
                                 """))
                 .andDo(print())
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$").value(commentToFeedback.getCommentID()));
+                .andExpect(jsonPath("$").value(commentToFeedback.getCommentId()));
     }
 
     @Test
@@ -170,7 +170,7 @@ class FeedbackControllerTest {
 
     @Test
     void addOrganizationReply() throws Exception {
-        Mockito.doReturn(organizationReply.getOrganizationReplyID()).when(sut).addOrganizationReply(feedbackId, organizationReplyCreateDTO);
+        Mockito.doReturn(organizationReply.getOrganizationReplyId()).when(sut).addOrganizationReply(feedbackId, organizationReplyCreateDTO);
         mockMvc.perform(post("/api/v1/feedbacks/{feedbackId}/reply", feedbackId)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content("""
@@ -180,7 +180,7 @@ class FeedbackControllerTest {
                                     """))
                 .andDo(print())
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$").value(organizationReply.getOrganizationReplyID()));
+                .andExpect(jsonPath("$").value(organizationReply.getOrganizationReplyId()));
     }
 
     @Test
@@ -190,6 +190,6 @@ class FeedbackControllerTest {
                 .content(feedbackId))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.organizationReplyID").value(organizationReplyGetDTO.getOrganizationReplyID()));
+                .andExpect(jsonPath("$.organizationReplyId").value(organizationReplyGetDTO.getOrganizationReplyId()));
     }
 }

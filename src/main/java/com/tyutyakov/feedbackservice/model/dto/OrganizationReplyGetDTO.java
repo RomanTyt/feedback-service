@@ -10,7 +10,7 @@ import java.util.Objects;
 @Setter
 @Getter
 public class OrganizationReplyGetDTO {
-    private String organizationReplyID;
+    private String organizationReplyId;
 
     private LocalDateTime dateTimeCreation;
 
@@ -23,11 +23,11 @@ public class OrganizationReplyGetDTO {
 
         OrganizationReplyGetDTO that = (OrganizationReplyGetDTO) o;
 
-        return Objects.equals(organizationReplyID, that.organizationReplyID);
+        return Objects.equals(organizationReplyId, that.organizationReplyId);
     }
 
     @Override
     public int hashCode() {
-        return organizationReplyID != null ? organizationReplyID.hashCode() : 0;
+        return organizationReplyId != null ? organizationReplyId.hashCode() : 0;
     }
 }

@@ -23,7 +23,7 @@ public class CommentToFeedback {
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name = "comment_id")
-    private String commentID;
+    private String commentId;
 
     @Column(name = "commentator_name")
     private String commentatorName;
@@ -44,7 +44,7 @@ public class CommentToFeedback {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
         CommentToFeedback that = (CommentToFeedback) o;
-        return commentID != null && Objects.equals(commentID, that.commentID);
+        return commentId != null && Objects.equals(commentId, that.commentId);
     }
 
     @Override
