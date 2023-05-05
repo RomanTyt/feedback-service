@@ -15,6 +15,7 @@ import com.tyutyakov.feedbackservice.repository.OrganizationReplyRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,6 +38,15 @@ public class FeedbackService {
         this.feedbackMapper = feedbackMapper;
         this.organizationReplyMapper = organizationReplyMapper;
         this.commentToFeedbackMapper = commentToFeedbackMapper;
+    }
+
+    public List<FeedbackInfo> getAllFeedbacks(){
+        List<Feedback> feedbackList = feedbackRepository.findAll();
+        List<FeedbackInfo> feedbackInfoList = new ArrayList<>();
+        for (Feedback feedback: feedbackList) {
+            feedbackInfoList.add(feedbackMapper.FeedbackMapToFeedbackInfo(feedback));
+        }
+        return feedbackInfoList;
     }
 
     /**
