@@ -5,11 +5,9 @@ import com.tyutyakov.feedbackservice.model.dto.FeedbackGetDTO;
 import com.tyutyakov.feedbackservice.model.dto.FeedbackInfo;
 import com.tyutyakov.feedbackservice.model.dto.FeedbackUpdateDTO;
 import com.tyutyakov.feedbackservice.model.entity.Feedback;
-import org.mapstruct.InjectionStrategy;
-import org.mapstruct.Mapper;
-import org.mapstruct.MappingTarget;
+import org.mapstruct.*;
 
-import java.time.LocalDate;
+import java.util.List;
 
 @Mapper(componentModel = "spring", injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public interface FeedbackMapper {
@@ -22,10 +20,5 @@ public interface FeedbackMapper {
 
     FeedbackGetDTO feedbackMapToFeedbackGetDTO(Feedback feedback);
 
-    default FeedbackInfo FeedbackMapToFeedbackInfo(Feedback feedback){
-        int rating = Math.abs(feedback.getFeedbackRatingLike() - feedback.getFeedbackRatingDislike());
-        int commentCount = feedback.getComments().size();
-        LocalDate date = feedback.getDateTimeCreation().toLocalDate();
-        return new FeedbackInfo(feedback.getOrderId(), feedback.getFeedbackAuthorName(), feedback.getFeedbackText(), rating, commentCount, date);
-    }
+    List<FeedbackInfo> feedbackMapToFeedbackGetDTO1(List<Feedback> feedback);
 }

@@ -15,6 +15,7 @@ import com.tyutyakov.feedbackservice.repository.OrganizationReplyRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -40,11 +41,20 @@ public class FeedbackService {
         this.commentToFeedbackMapper = commentToFeedbackMapper;
     }
 
+    /**
+     * Найти все отзывы
+     *
+     * @return  List отзывов(FeedbackInfo)
+     */
     public List<FeedbackInfo> getAllFeedbacks(){
         List<Feedback> feedbackList = feedbackRepository.findAll();
         List<FeedbackInfo> feedbackInfoList = new ArrayList<>();
         for (Feedback feedback: feedbackList) {
-            feedbackInfoList.add(feedbackMapper.FeedbackMapToFeedbackInfo(feedback));
+            int rating = Math.abs(feedback.getFeedbackRatingLike() - feedback.getFeedbackRatingDislike());
+            int commentCount = feedback.getComments().size();
+            LocalDate date = feedback.getDateTimeCreation().toLocalDate();
+            FeedbackInfo feedbackInfo = new FeedbackInfo(feedback.getOrderId(), feedback.getFeedbackAuthorName(), feedback.getFeedbackText(), rating, commentCount, date);
+            feedbackInfoList.add(feedbackInfo);
         }
         return feedbackInfoList;
     }

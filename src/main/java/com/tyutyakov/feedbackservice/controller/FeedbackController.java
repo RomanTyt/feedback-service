@@ -20,7 +20,7 @@ public class FeedbackController {
         this.feedbackService = feedbackService;
     }
 
-    @GetMapping("/getAll")
+    @GetMapping()
     @Operation(summary = "Найти все отзывы")
     public List<FeedbackInfo> getAllFeedbacks(){
         return feedbackService.getAllFeedbacks();
