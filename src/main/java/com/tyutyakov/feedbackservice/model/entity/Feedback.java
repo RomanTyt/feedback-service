@@ -45,6 +45,7 @@ public class Feedback {
 
     @Column(name = "feedback_text")
     private String feedbackText;
+
     @Column(name = "advantages_of_the_product")
     private String advantagesOfTheProduct;
 

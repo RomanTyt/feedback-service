@@ -20,6 +20,12 @@ public class FeedbackController {
         this.feedbackService = feedbackService;
     }
 
+    @GetMapping()
+    @Operation(summary = "Найти все отзывы")
+    public List<FeedbackInfo> getAllFeedbacks(){
+        return feedbackService.getAllFeedbacks();
+    }
+
     @GetMapping("/{feedbackId}")
     @Operation(summary = "Найти отзыв по id")
     public FeedbackGetDTO findFeedbackById(@PathVariable String feedbackId){
